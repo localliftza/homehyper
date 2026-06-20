@@ -443,7 +443,7 @@ document.addEventListener('DOMContentLoaded', function() {
 function login() {
   var email = document.getElementById('loginEmail').value.trim();
   var pass  = document.getElementById('loginPass').value;
-  var p_stored = biz.password || 'admin123';
+  var p_stored = biz.password || 'CHISTIYA2021';
   var e_stored = 'homehyper';
   if (!email) { showLoginErr('Enter your email'); return; }
   if (email !== e_stored) { showLoginErr('Incorrect email.'); return; }
@@ -465,6 +465,9 @@ function init() {
 {name:'Aluminum Heavy Duty Double Rail 2.5M',price:300,type:'fixed',category:'ALUMINUM HEAVY DUTY DOUBLE RAIL'},
 {name:'Aluminum Heavy Duty Double Rail 2M',price:240,type:'fixed',category:'ALUMINUM HEAVY DUTY DOUBLE RAIL'},
 {name:'Aluminum Heavy Duty Double Rail 3M',price:360,type:'fixed',category:'ALUMINUM HEAVY DUTY DOUBLE RAIL'},
+{name:'Customisable Aluminium Blinds Freerange',price:1,type:'fixed',category:'BLINDS'},
+{name:'Customisable Wooden Blinds Freerange',price:1,type:'fixed',category:'BLINDS'},
+{name:'Customisable Curtains Freerange',price:1,type:'fixed',category:'CURTAINS'},
 {name:'Bar Stool (Each) R700',price:700,type:'fixed',category:'BAR STOOLS'},
 {name:'Bar Stool (Each) R850',price:850,type:'fixed',category:'BAR STOOLS'},
 {name:'Roller Blinds 1.2M',price:450,type:'fixed',category:'BLINDS'},
@@ -617,7 +620,7 @@ function loadBizSettings() {
   var savedTerms     = biz.terms     || '';
   var savedThankYou  = biz.thankYou  || '';
   var savedQuoteStart= biz.quoteStart|| '';
-  var savedPassword  = biz.password  || 'admin123';
+  var savedPassword  = biz.password  || 'CHISTIYA2021';
   var savedLogo      = biz.logo      || '';
   // Lock business details to LocalLift ZA
   biz.name  = 'Home Hyper T/A Chistiya Traders';
@@ -625,7 +628,8 @@ function loadBizSettings() {
   biz.email = 'im.ilyas.shaik4444@gmail.com';
   biz.addr  = '68 Voortrekker Road, New Redruth, Alberton, 1449, South Africa';
   // Restore user settings
-  biz.terms      = savedTerms;
+  // biz.terms      = savedTerms;
+  biz.terms      = '1) 30% Deposit Upon Placing Of Order \n2) Chistiya Traders Cc Reserve The Right To Remove Any Work Done Should Payment Not Be Made On Time Sley\n3) Goods Remain Property Of Chistiya Traders Cc Until Paid In Full.\n4) Chistiya Traders Cc Will Not Be Held Liable For Incorrect Measurement Supplied By Client.\n5) Please Allow A Minimum Of 5 Working Days For Orders To Be Fulfilled.\n6) No Claims Should Be Entertained On Defective or Workmanship After 3 Working Days.\n7) Orders Not Collected Within 3 Months Will Be Sold To Defray Expenses.\n8) All Orders Will Only Be Fulfilled Subject To The Availability Of The Fabric Chosen.\n9) No Cancellation, No Refund Once Order Is Made Up.\n\nNO REFUND NO EXCHANGE'
   biz.thankYou   = savedThankYou;
   biz.quoteStart = savedQuoteStart;
   biz.password   = savedPassword;
@@ -990,7 +994,7 @@ function downloadPDF() {
 
   // ── Helper: draw thank you footer on current page ──
   function drawFooter() {
-    var tyMsg=biz.thankYou||'Thank you for choosing us! We look forward to furnishing your space beautifully.';
+    var tyMsg=biz.thankYou||'Thank you for choosing us! We look forward to serving you again.';
     doc.setDrawColor(184,151,42); doc.setLineWidth(0.4); doc.line(MARGIN,pageH-24,196,pageH-24);
     doc.setFillColor(27,47,110); doc.rect(MARGIN,pageH-22,182,14,'F');
     doc.setFillColor(184,151,42); doc.rect(MARGIN,pageH-22,4,14,'F');
@@ -1064,7 +1068,7 @@ function downloadPDF() {
     doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.text('TERMS & CONDITIONS',MARGIN,y);
     doc.setFont('helvetica','normal'); doc.setFontSize(8);
     var termLines = doc.splitTextToSize(biz.terms, 182);
-    y = checkNewPage(y, termLines.length * 5 + 6);
+	y = checkNewPage(y, termLines.length * 5 + 6);
     doc.text(termLines, MARGIN, y+5);
   }
 
