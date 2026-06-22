@@ -978,7 +978,7 @@ function downloadPDF() {
   var MARGIN=14;
   var FOOTER_H=28; // reserved space for thank you banner
   var ROW_H=10;
-
+  function rowHeight(item){ var lines=1; if(item.name.length>26) lines=Math.max(lines,2); if(item.details.length>20) lines=Math.max(lines,2); return lines>1?14:10; }
   // ── Helper: draw header on any page ──
   function drawHeader(firstPage) {
     doc.setFillColor(27,47,110); doc.rect(0,0,210,46,'F');
@@ -1014,8 +1014,8 @@ function downloadPDF() {
       var ny = 56;
       doc.setFillColor(27,47,110); doc.rect(MARGIN,ny,182,8,'F');
       doc.setTextColor(255,255,255); doc.setFont('helvetica','bold'); doc.setFontSize(9);
-      doc.text('Product',16,ny+5.5); doc.text('Details',70,ny+5.5); doc.text('Qty',120,ny+5.5);
-      doc.text('Unit Price',135,ny+5.5); doc.text('Total',170,ny+5.5);
+      doc.text('Product',16,ny+5.5); doc.text('Details',82,ny+5.5); doc.text('Qty',124,ny+5.5);
+      doc.text('Unit Price',136,ny+5.5); doc.text('Total',168,ny+5.5);
       doc.setTextColor(0,0,0); doc.setFont('helvetica','normal');
       return ny + 12;
     }
@@ -1035,23 +1035,27 @@ function downloadPDF() {
   // Table header
   doc.setFillColor(27,47,110); doc.rect(MARGIN,y,182,8,'F');
   doc.setTextColor(255,255,255); doc.setFont('helvetica','bold'); doc.setFontSize(9);
-  doc.text('Product',16,y+5.5); doc.text('Details',70,y+5.5); doc.text('Qty',120,y+5.5);
-  doc.text('Unit Price',135,y+5.5); doc.text('Total',170,y+5.5);
+  doc.text('Product',16,y+5.5); doc.text('Details',82,y+5.5); doc.text('Qty',124,y+5.5);
+  doc.text('Unit Price',136,y+5.5); doc.text('Total',168,y+5.5);
   y += 12; doc.setTextColor(0,0,0); doc.setFont('helvetica','normal');
 
   // Items - with page break check
   items.forEach(function(item,idx){
-    y = checkNewPage(y, ROW_H);
-    if(idx%2===0){doc.setFillColor(247,248,251);doc.rect(MARGIN,y-3,182,8,'F');}
-    // Truncate long names to fit columns
-    var name = item.name.length>28 ? item.name.substring(0,26)+'..' : item.name;
-    var det  = item.details.length>22 ? item.details.substring(0,20)+'..' : item.details;
-    doc.text(name,16,y+2);
-    doc.text(det,70,y+2);
-    doc.text(String(item.qty),122,y+2);
-    doc.text('R'+item.unitPrice+(item.pricingType==='dim'?'/m²':''),135,y+2);
-    doc.text('R '+item.total.toFixed(2),170,y+2);
-    y += ROW_H;
+	var rh = rowHeight(item);
+    y = checkNewPage(y, rh);
+    if(idx%2===0){doc.setFillColor(247,248,251);doc.rect(MARGIN,y-3,182,rh-2,'F');}
+    // Use smaller font for long product names instead of truncating
+    var nameFont = item.name.length>26 ? 7.5 : 9;
+    var detFont  = item.details.length>20 ? 7.5 : 9;
+    doc.setFontSize(nameFont);
+    doc.text(item.name,16,y+2,{maxWidth:64});
+    doc.setFontSize(detFont);
+    doc.text(item.details,82,y+2,{maxWidth:40});
+    doc.setFontSize(9);
+    doc.text(String(item.qty),124,y+2);
+    doc.text('R'+item.unitPrice+(item.pricingType==='dim'?'/m²':''),136,y+2);
+    doc.text('R '+item.total.toFixed(2),168,y+2);
+    y += rh;
   });
 
   // Total line
