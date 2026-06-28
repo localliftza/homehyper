@@ -188,7 +188,7 @@ button,input,select,textarea{font-family:'DM Sans',sans-serif;cursor:pointer}
         <div class="page-header">
           <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
             <div><h2>New Quote</h2><p>Build and send a customer quote</p></div>
-            <span class="quote-badge" id="quoteDisplay">QUOTE #&mdash;</span>
+            <span class="quote-badge" id="quoteDisplay">QUOTE/Invoice #&mdash;</span>
           </div>
         </div>
         <div class="grid-2">
@@ -280,11 +280,11 @@ button,input,select,textarea{font-family:'DM Sans',sans-serif;cursor:pointer}
           <div class="stat"><div class="stat-val" id="statCount">0</div><div class="stat-lbl">Total quotes</div></div>
           <div class="stat"><div class="stat-val" id="statRev">R0</div><div class="stat-lbl">Total revenue</div></div>
           <div class="stat"><div class="stat-val" id="statAvg">R0</div><div class="stat-lbl">Avg. quote</div></div>
-          <div class="stat"><div class="stat-val" id="statToday">0</div><div class="stat-lbl">Quotes today</div></div>
+          <div class="stat"><div class="stat-val" id="statToday">0</div><div class="stat-lbl">Quotes/Invoices today</div></div>
         </div>
         <div class="card"><div style="overflow-x:auto">
           <table class="tbl">
-            <thead><tr><th>Quote #</th><th>Date</th><th>Customer</th><th>Phone</th><th>Items</th><th>Total</th><th>Status</th></tr></thead>
+            <thead><tr><th>Quote/Invoice #</th><th>Date</th><th>Customer</th><th>Phone</th><th>Items</th><th>Total</th><th>Status</th></tr></thead>
             <tbody id="salesBody"></tbody>
           </table>
         </div></div>
@@ -337,7 +337,7 @@ button,input,select,textarea{font-family:'DM Sans',sans-serif;cursor:pointer}
               <div class="card-title">Quote settings</div>
               <div class="field-wrap"><label class="field-label">Terms / notes</label><textarea class="inp" id="bTerms" rows="3" placeholder="e.g. Quote valid for 30 days. 50% deposit required."></textarea></div>
               <div class="field-wrap"><label class="field-label">Thank you message (bottom of PDF)</label><textarea class="inp" id="bThankYou" rows="3" placeholder="e.g. Thank you for choosing us!"></textarea></div>
-              <div class="field-wrap"><label class="field-label">Next quote number</label><input class="inp" id="bQuoteStart" type="number" placeholder="1001"/></div>
+              <div class="field-wrap"><label class="field-label">Next quote/invoice number</label><input class="inp" id="bQuoteStart" type="number" placeholder="1001"/></div>
               <button class="btn btn-primary" id="saveQuoteBtn">Save</button>
             </div>
             <div class="ll-section">
@@ -660,7 +660,7 @@ function saveQuoteSettings() {
   toast('Quote settings saved');
 }
 
-function loadQuoteNum() { document.getElementById('quoteDisplay').textContent = 'QUOTE #' + quoteNum; }
+function loadQuoteNum() { document.getElementById('quoteDisplay').textContent = 'QUOTE/INVOICE #' + quoteNum; }
 
 function handleLogoUpload(e) {
   var file = e.target.files[0]; if (!file) return;
@@ -942,10 +942,10 @@ function generateQuote() {
   if (items.length===0) { toast('Add at least one item first'); return; }
   if (generated) { toast('Quote already generated — clear to start a new one'); return; }
   quoteNum++; localStorage.setItem('fq_quote', quoteNum);
-  document.getElementById('quoteDisplay').textContent='QUOTE #'+quoteNum;
+  document.getElementById('quoteDisplay').textContent='QUOTE/INVOICE #'+quoteNum;
   var total=parseFloat(document.getElementById('grandTotal').textContent);
   sales.push({quote:quoteNum,date:new Date().toLocaleDateString('en-ZA'),customer:document.getElementById('custName').value||'Walk-in',phone:document.getElementById('custPhone').value||'—',items:items.length,total:total,status:'pending'});
-  saveSales(); renderSales(); generated=true; toast('Quote #'+quoteNum+' generated');
+  saveSales(); renderSales(); generated=true; toast('Quote/INVOICE #'+quoteNum+' generated');
 }
 
 function saveSales() { localStorage.setItem('fq_sales', JSON.stringify(sales)); }
@@ -987,7 +987,7 @@ function downloadPDF() {
     doc.setFontSize(16); doc.setFont('helvetica','bold'); doc.text(bizName,MARGIN,13);
     doc.setFontSize(9); doc.setFont('helvetica','normal');
     doc.text(bizPhone,MARGIN,21); doc.text(bizEmail,MARGIN,28); doc.text(bizAddr,MARGIN,35);
-    doc.setFontSize(14); doc.setFont('helvetica','bold'); doc.text('QUOTE #'+q,140,16);
+    doc.setFontSize(14); doc.setFont('helvetica','bold'); doc.text('QUOTE/INVOICE #'+q,140,16);
     doc.setFontSize(9); doc.setFont('helvetica','normal'); doc.text(new Date().toLocaleDateString('en-ZA'),140,24);
     doc.setTextColor(0,0,0);
   }
@@ -1079,7 +1079,7 @@ function downloadPDF() {
   // Thank you footer on last page
   drawFooter();
 
-  doc.save('Quote_'+q+'_'+cn.replace(/\s+/g,'_')+'.pdf');
+  doc.save('Quote_Invoice_'+q+'_'+cn.replace(/\s+/g,'_')+'.pdf');
   toast('PDF downloaded');
 }
 
@@ -1090,7 +1090,7 @@ function sendWhatsApp() {
   var cn=document.getElementById('custName').value||'there';
   var bizName=biz.name||'LocalLift ZA'; var q=generated?quoteNum:'(Draft)'; var gt=document.getElementById('grandTotal').textContent;
   var lines=items.map(function(i){ return '  • '+i.name+' ('+i.details+' × '+i.qty+') — R '+i.total.toFixed(2); }).join('\n');
-  var msg='Hi '+cn+',\n\nThank you for your interest in '+bizName+'!\n\nQuote Q'+q+':\n\n'+lines+'\n\n*TOTAL: R '+gt+'*\n\n'+(biz.terms||'Quote valid for 30 days.')+'\n\nKind regards,\n'+bizName+'\n'+(biz.phone||'063 855 7681');
+  var msg='Hi '+cn+',\n\nThank you for your interest in '+bizName+'!\n\nQuote/Invoice Q'+q+':\n\n'+lines+'\n\n*TOTAL: R '+gt+'*\n\n'+(biz.terms||'Quote valid for 30 days.')+'\n\nKind regards,\n'+bizName+'\n'+(biz.phone||'063 855 7681');
   window.open('https://wa.me/'+p+'?text='+encodeURIComponent(msg));
 }
 
